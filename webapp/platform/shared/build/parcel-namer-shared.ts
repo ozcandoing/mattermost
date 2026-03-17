@@ -22,8 +22,11 @@ export default new Namer({
             return null;
         }
 
-        // Get the relative file path within the source folder
-        const relativeDir = path.posix.relative('./src', path.dirname(mainEntry.filePath));
+        // Get the relative file path within the source folder.
+        // Use path.resolve + path.relative for cross-platform compatibility (Windows absolute paths
+        // like D:\... break path.posix.relative which expects POSIX-style absolute paths).
+        const srcDir = path.resolve('src');
+        const relativeDir = path.relative(srcDir, path.dirname(mainEntry.filePath)).split(path.sep).join(path.posix.sep);
 
         let filename;
         if (bundle.type === 'js') {
