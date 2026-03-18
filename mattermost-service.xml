@@ -1,0 +1,37 @@
+<service>
+  <id>mattermost</id>
+  <name>Mattermost</name>
+  <description>Mattermost Team Messaging Server</description>
+
+  <!-- Çalıştırılacak binary -->
+  <executable>C:\mattermost\bin\mattermost.exe</executable>
+
+  <!-- Çalışma dizini (config.json buradan okunur) -->
+  <workingdirectory>C:\mattermost</workingdirectory>
+
+  <!-- Log dosyaları -->
+  <logpath>C:\mattermost\logs</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+
+  <!-- Servis başlamadan önce beklenecek süre (ms) -->
+  <startarguments></startarguments>
+
+  <!-- Servis kapanırken önce CTRL+C gönderir, sonra bekler -->
+  <stopparentprocessfirst>true</stopparentprocessfirst>
+  <stoptimeout>30 sec</stoptimeout>
+
+  <!-- Crash durumunda otomatik yeniden başlat -->
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="20 sec"/>
+  <onfailure action="none"/>
+  <resetfailure>1 hour</resetfailure>
+
+  <!-- Servis Windows başlarken otomatik çalışsın -->
+  <startmode>Automatic</startmode>
+
+  <!-- Bağımlılıklar: PostgreSQL servis adını kendi kurulumunuza göre değiştirin -->
+  <depend>postgresql-x64-16</depend>
+</service>
