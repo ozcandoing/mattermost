@@ -119,6 +119,11 @@ func root(c *Context, w http.ResponseWriter, r *http.Request) {
 		contents = bytes.ReplaceAll(contents, []byte(originalHTML), []byte(modifiedHTML))
 	}
 
+	// Polyfill for RegExp.escape (ES2025) - not available in all browsers yet.
+	// Must be injected before any app JS runs to prevent loading screen from getting stuck.
+	const regexpEscapePolyfill = `<script>if(typeof RegExp.escape!=='function'){Object.defineProperty(RegExp,'escape',{value:function(s){return String(s).replace(/[/\\^$*+?.()|[\]{}]/g,'\\$&')},configurable:true,writable:true})}</script>`
+	contents = bytes.ReplaceAll(contents, []byte(`<script id="publicPathInWindowScript"></script>`), []byte(`<script id="publicPathInWindowScript"></script>`+regexpEscapePolyfill))
+
 	w.Header().Set("Content-Type", "text/html")
 	if _, err = w.Write(contents); err != nil {
 		c.Logger.Warn("Failed to write content to HTTP reply", mlog.Err(err))
